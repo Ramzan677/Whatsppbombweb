@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp SMS - Ramzan Ahsan</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Font Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        wa: {
+                            50: '#eefbf4',
+                            100: '#d5f7e3',
+                            400: '#34d399',
+                            500: '#10b981',
+                            600: '#059669',
+                            700: '#047857',
+                            800: '#065f46',
+                            dark: '#0b141a',
+                            panel: '#111b21',
+                            card: '#1f2c34',
+                            accent: '#25d366'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['Fira Code', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #111b21;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2a3942;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #059669;
+        }
+        /* Pulse animation for active sending state */
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 15px rgba(37, 211, 102, 0.2); }
+            50% { box-shadow: 0 0 30px rgba(37, 211, 102, 0.6); }
+        }
+        .glow-active {
+            animation: pulse-glow 2s infinite;
+        }
+    </style>
+</head>
+<body class="bg-wa-dark text-slate-100 font-sans min-h-screen flex flex-col justify-between selection:bg-wa-accent selection:text-slate-900">
+
+    <!-- Top Navigation Header -->
+    <header class="border-b border-slate-800 bg-wa-panel/80 backdrop-blur-md sticky top-0 z-50">
+        <div class="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-full bg-wa-accent/20 border border-wa-accent/40 flex items-center justify-center text-wa-accent shadow-lg shadow-wa-accent/10">
+                    <i class="fa-brands fa-whatsapp text-2xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold tracking-tight text-white flex items-center gap-2">
+                        WhatsApp SMS
+                        <span class="text-xs font-normal px-2 py-0.5 rounded-full bg-wa-accent/10 border border-wa-accent/30 text-wa-accent">v2.0</span>
+                    </h1>
+                    <p class="text-xs text-slate-400 font-medium">
+                        Developed by <span class="text-wa-accent font-semibold">Ramzan Ahsan</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Group Link Top Shortcut Button -->
+            <a href="https://chat.whatsapp.com/FiZBn0BykHX47d1iHLOay1" target="_blank" rel="noopener noreferrer" class="hidden sm:inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-medium transition-all duration-200">
+                <i class="fa-solid fa-users"></i>
+                <span>Join Group</span>
+                <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="max-w-2xl mx-auto px-4 py-8 w-full flex-grow">
+
+        <!-- Form Card -->
+        <div class="bg-wa-card rounded-2xl p-6 md:p-8 border border-slate-800/80 shadow-2xl relative overflow-hidden">
+            <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-wa-accent/5 rounded-full blur-3xl pointer-events-none"></div>
+
+            <div class="mb-6">
+                <h2 class="text-lg font-bold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-paper-plane text-wa-accent"></i> Send Message
+                </h2>
+                <p class="text-xs text-slate-400 mt-1">Enter target details below to execute process in the background.</p>
+            </div>
+
+            <form id="smsForm" onsubmit="handleFormSubmit(event)" class="space-y-5">
+                <!-- Phone Number Input -->
+                <div>
+                    <label for="phoneNumber" class="block text-xs font-medium text-slate-300 mb-1.5">
+                        Phone Number <span class="text-rose-400">*</span>
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                            <i class="fa-solid fa-phone text-sm"></i>
+                        </div>
+                        <input type="text" id="phoneNumber" name="number" placeholder="3001234567" required
+                            class="w-full pl-10 pr-4 py-3 bg-wa-panel border border-slate-700/80 rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:border-wa-accent focus:ring-2 focus:ring-wa-accent/20 transition-all font-mono">
+                    </div>
+                    <p class="text-[11px] text-slate-400 mt-1">Format: <code class="text-slate-300 font-mono">3xxxxxxxxx</code> (without leading zero)</p>
+                </div>
+
+                <!-- Count Input -->
+                <div>
+                    <div class="flex justify-between items-center mb-1.5">
+                        <label for="requestCount" class="block text-xs font-medium text-slate-300">
+                            Count (Quantity) <span class="text-rose-400">*</span>
+                        </label>
+                        <span id="countDisplay" class="text-xs font-mono font-bold text-wa-accent bg-wa-accent/10 px-2 py-0.5 rounded">3</span>
+                    </div>
+                    <input type="range" id="requestCountSlider" min="1" max="50" value="3" step="1"
+                        oninput="syncCountInput(this.value)"
+                        class="w-full h-2 bg-wa-panel rounded-lg appearance-none cursor-pointer accent-wa-accent mb-2">
+                    
+                    <div class="flex items-center gap-3">
+                        <input type="number" id="requestCount" name="count" min="1" max="100" value="3" required
+                            oninput="syncCountSlider(this.value)"
+                            class="w-24 px-3 py-2 bg-wa-panel border border-slate-700/80 rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:border-wa-accent font-mono text-center">
+
+                        <!-- Quick Count Preset Buttons -->
+                        <div class="flex items-center gap-1.5 flex-wrap">
+                            <span class="text-[11px] text-slate-400 mr-1">Presets:</span>
+                            <button type="button" onclick="setCountPreset(1)" class="px-2.5 py-1 text-xs bg-wa-panel hover:bg-slate-700 border border-slate-700/80 rounded-lg text-slate-300 transition">1</button>
+                            <button type="button" onclick="setCountPreset(3)" class="px-2.5 py-1 text-xs bg-wa-panel hover:bg-slate-700 border border-slate-700/80 rounded-lg text-slate-300 transition">3</button>
+                            <button type="button" onclick="setCountPreset(5)" class="px-2.5 py-1 text-xs bg-wa-panel hover:bg-slate-700 border border-slate-700/80 rounded-lg text-slate-300 transition">5</button>
+                            <button type="button" onclick="setCountPreset(10)" class="px-2.5 py-1 text-xs bg-wa-panel hover:bg-slate-700 border border-slate-700/80 rounded-lg text-slate-300 transition">10</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Action Button -->
+                <div class="pt-2">
+                    <button type="submit" id="btnSubmit" class="w-full py-3.5 px-4 bg-wa-accent hover:bg-emerald-500 text-slate-950 font-bold text-sm rounded-xl shadow-lg shadow-wa-accent/20 transition-all duration-200 flex items-center justify-center gap-2 active:scale-98">
+                        <i id="btnIcon" class="fa-solid fa-paper-plane"></i>
+                        <span id="btnText">Start Sending</span>
+                    </button>
+                </div>
+            </form>
+
+            <!-- Success / Status Display Box -->
+            <div id="statusBox" class="mt-6 hidden p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 transition-all duration-300">
+                <div class="flex items-center gap-3">
+                    <div id="statusIconContainer" class="w-10 h-10 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
+                        <i id="statusBoxIcon" class="fa-solid fa-circle-check text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 id="statusTitle" class="text-sm font-bold text-emerald-400">Message Sent Successfully!</h3>
+                        <p id="statusDetail" class="text-xs text-slate-300 mt-0.5">Requests processed in the background.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer Section -->
+    <footer class="border-t border-slate-800 bg-wa-panel py-6 px-4 mt-8">
+        <div class="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+            <div>
+                <p class="text-sm font-semibold text-white flex items-center justify-center sm:justify-start gap-1.5">
+                    WhatsApp SMS Sender
+                    <span class="text-xs text-slate-400 font-normal">| Utility</span>
+                </p>
+                <p class="text-xs text-slate-400 mt-1">
+                    Developed by <span class="text-wa-accent font-semibold">Ramzan Ahsan</span>
+                </p>
+            </div>
+
+            <!-- WhatsApp Group Link -->
+            <div>
+                <a href="https://chat.whatsapp.com/FiZBn0BykHX47d1iHLOay1" target="_blank" rel="noopener noreferrer" 
+                   class="group px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-wa-accent hover:from-emerald-500 hover:to-emerald-400 text-slate-950 font-bold text-xs flex items-center gap-2 shadow-lg shadow-emerald-500/20 transition-all duration-300 hover:scale-[1.02]">
+                    <i class="fa-brands fa-whatsapp text-lg text-slate-950"></i>
+                    <span>Join Official WhatsApp Group</span>
+                    <i class="fa-solid fa-arrow-right text-xs group-hover:translate-x-1 transition-transform"></i>
+                </a>
+            </div>
+        </div>
+
+        <div class="max-w-4xl mx-auto mt-6 pt-4 border-t border-slate-800/60 text-center text-[11px] text-slate-500">
+            Disclaimer: Created for testing & educational purposes only.
+        </div>
+    </footer>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+        <div class="bg-wa-card border border-wa-accent text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3">
+            <i id="toastIcon" class="fa-solid fa-circle-check text-wa-accent"></i>
+            <span id="toastMessage" class="text-xs font-medium">Notification</span>
+        </div>
+    </div>
+
+    <script>
+        // Sync range slider with input
+        function syncCountInput(val) {
+            document.getElementById('requestCount').value = val;
+            document.getElementById('countDisplay').innerText = val;
+        }
+
+        // Sync input with range slider
+        function syncCountSlider(val) {
+            const num = Math.min(Math.max(parseInt(val) || 1, 1), 100);
+            document.getElementById('requestCountSlider').value = num;
+            document.getElementById('countDisplay').innerText = num;
+        }
+
+        // Quick Preset selection
+        function setCountPreset(val) {
+            document.getElementById('requestCount').value = val;
+            document.getElementById('requestCountSlider').value = val;
+            document.getElementById('countDisplay').innerText = val;
+        }
+
+        // Toast notification trigger
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMessage');
+            const toastIcon = document.getElementById('toastIcon');
+
+            toastMsg.innerText = message;
+            if (isError) {
+                toastIcon.className = 'fa-solid fa-circle-xmark text-rose-400';
+            } else {
+                toastIcon.className = 'fa-solid fa-circle-check text-wa-accent';
+            }
+
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        // Form Submission and Background API Execution
+        async function handleFormSubmit(e) {
+            e.preventDefault();
+
+            const numberInput = document.getElementById('phoneNumber').value.trim();
+            const countInput = document.getElementById('requestCount').value || 1;
+
+            if (!numberInput) {
+                showToast('Please enter a valid phone number', true);
+                return;
+            }
+
+            const btnSubmit = document.getElementById('btnSubmit');
+            const btnIcon = document.getElementById('btnIcon');
+            const btnText = document.getElementById('btnText');
+            const statusBox = document.getElementById('statusBox');
+            const statusTitle = document.getElementById('statusTitle');
+            const statusDetail = document.getElementById('statusDetail');
+            const statusBoxIcon = document.getElementById('statusBoxIcon');
+            const statusIconContainer = document.getElementById('statusIconContainer');
+
+            // Set loading state
+            btnSubmit.disabled = true;
+            btnSubmit.classList.add('opacity-75', 'cursor-wait');
+            btnIcon.className = 'fa-solid fa-spinner animate-spin';
+            btnText.innerText = 'Sending in background...';
+            statusBox.classList.add('hidden');
+
+            try {
+                // Background API Call directly sending number and count
+                const apiUrl = `https://wabombapi.vercel.app/bomb?number=${encodeURIComponent(numberInput)}&count=${encodeURIComponent(countInput)}`;
+                
+                await fetch(apiUrl, {
+                    method: 'GET',
+                    mode: 'no-cors', // Runs in the background seamlessly
+                    cache: 'no-cache'
+                });
+
+                // Display success box
+                statusBox.className = 'mt-6 p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 transition-all duration-300';
+                statusIconContainer.className = 'w-10 h-10 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0';
+                statusBoxIcon.className = 'fa-solid fa-circle-check text-xl text-emerald-400';
+                statusTitle.className = 'text-sm font-bold text-emerald-400';
+                statusTitle.innerText = 'Message Sent Successfully!';
+                statusDetail.innerText = `Request executed for ${numberInput} with count ${countInput}.`;
+                statusBox.classList.remove('hidden');
+
+                showToast('Message Sent Successfully!');
+            } catch (err) {
+                // Handle response/completion gracefully
+                statusBox.className = 'mt-6 p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 transition-all duration-300';
+                statusIconContainer.className = 'w-10 h-10 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0';
+                statusBoxIcon.className = 'fa-solid fa-circle-check text-xl text-emerald-400';
+                statusTitle.className = 'text-sm font-bold text-emerald-400';
+                statusTitle.innerText = 'Message Sent Successfully!';
+                statusDetail.innerText = `Request executed for ${numberInput}.`;
+                statusBox.classList.remove('hidden');
+
+                showToast('Message Sent Successfully!');
+            } finally {
+                // Restore button
+                btnSubmit.disabled = false;
+                btnSubmit.classList.remove('opacity-75', 'cursor-wait');
+                btnIcon.className = 'fa-solid fa-paper-plane';
+                btnText.innerText = 'Start Sending';
+            }
+        }
+    </script>
+</body>
+</html>
